@@ -101,7 +101,7 @@ public class PorterStemmer {
     /**
      *
      * @param token
-     * @return
+     * @return return processed token
      */
     public static String processToken(String token) {
         if (token.length() < THREE) {
@@ -117,7 +117,6 @@ public class PorterStemmer {
             token = token.substring(0, token.length() - 2);
 
         } else if (token.endsWith("ss")) {
-            //step 1a.3
             //do nothing
         } else if (!token.endsWith("ss") && token.endsWith("s")) {
             // note that Step 1a.3 implies that there is only a
@@ -139,9 +138,9 @@ public class PorterStemmer {
             if (mGr0.matcher(stem).find()) { // if the pattern matches the stem
                 token = stem + "ee";
             }
-        } // program the rest of 1b. set the boolean doStep1bb to true if Step 1b* 
-        // should be performed.
-        else if (token.endsWith("ed")) {
+        } else if (token.endsWith("ed")) {
+            // program the rest of 1b. set the boolean doStep1bb
+        //to true if Step 1b* should be performed.
             String stem = token.substring(0, token.length() - 2);
 
             if (sVs.matcher(stem).find()) {
@@ -166,8 +165,8 @@ public class PorterStemmer {
             } else if (dC.matcher(token).find()) {
                 token = token.substring(0, token.length() - 1);
 
-            } else if (mEq1.matcher(token).find() &&
-                cVc.matcher(token).find()) {
+            } else if (mEq1.matcher(token).find()
+                && cVc.matcher(token).find()) {
                 token = token + "e";
 
             }
