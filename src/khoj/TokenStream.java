@@ -5,17 +5,21 @@
  */
 package khoj;
 
+/**
+ *
+ * @author jass
+ */
 public interface TokenStream {
    /**
     Returns the next token from the stream, or null if there is no token
     available.
-     * @return 
+     * @return next available token.
     */
    String nextToken();
 
    /**
-    Returns true if the stream has tokens remaining.
-     * @return 
+    *
+    * @return Returns true if the stream has tokens remaining.
     */
    boolean hasNextToken();
 }
