@@ -17,6 +17,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.lang.System;
 
 /**
  * A very simple search engine. Uses an inverted index over a folder
@@ -26,9 +27,9 @@ public class SimpleEngine {
 
     /**
      *
-     * @throws IOException
+     * @throws IOException Throws Input Output Exception
      */
-    public static void startIndexing() throws IOException {
+    public final void startIndexing() throws IOException {
 
         final Path currentWorkingPath = Paths.get("").toAbsolutePath();
         // the inverted index
@@ -36,11 +37,9 @@ public class SimpleEngine {
 
         // the list of file names that were processed
         final List<String> fileNames = new ArrayList<>();
-
         // This is our standard "walk through all .txt files" code.
         Files.walkFileTree(currentWorkingPath, new SimpleFileVisitor<Path>() {
             int mDocumentID = 0;
-
             public FileVisitResult preVisitDirectory(Path dir,
                 final BasicFileAttributes attrs) {
                 // make sure we only process the current working directory
@@ -53,13 +52,12 @@ public class SimpleEngine {
             @Override
             public FileVisitResult visitFile(final Path file,
                 final BasicFileAttributes attrs) throws FileNotFoundException {
-                // only process .txt files
-                if (file.toString().endsWith(".txt")) {
+                // only process .json files
+                if (file.toString().endsWith(".json")) {
                     // we have found a .txt file; add its name to
                     //the fileName list, then index the file and
                     //increase the document ID counter.
                     System.out.println("Indexing file " + file.getFileName());
-
                     fileNames.add(file.getFileName().toString());
                     indexFile(file.toFile(), index, mDocumentID);
                     mDocumentID++;
@@ -93,7 +91,7 @@ public class SimpleEngine {
      * have already been processed.
      * @param docID the integer ID of the current document, needed
      * when indexing each term from the document.
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException Throws file not found exception
      */
     private static void indexFile(final File file,
         final NaiveInvertedIndex index, final int docID)
@@ -102,11 +100,12 @@ public class SimpleEngine {
         // Construct a SimpleTokenStream for the given File.
         // Read each token from the stream and add it to the index.
         SimpleTokenStream streamFile = new SimpleTokenStream(file);
-        String text;
+        String text = streamFile.readFile();
+        SimpleTokenStream streamText = new SimpleTokenStream(text);
         int i = 0;
-        while (streamFile.hasNextToken()) {
-            text = streamFile.nextToken();
-            index.addTerm(streamFile, text, docID);
+        while (streamText.hasNextToken()) {
+            text = streamText.nextToken();
+            index.addTerm(streamText, text, docID);
         }
     }
 

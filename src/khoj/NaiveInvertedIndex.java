@@ -59,7 +59,7 @@ public class NaiveInvertedIndex {
                 mIndex.remove(term);
                 mIndex.put(term, doc);
             }
-            System.out.print(mIndex);
+            System.out.println(mIndex);
 
         }
 

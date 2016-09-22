@@ -5,9 +5,11 @@
  */
 package khoj;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Reader;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,22 +26,40 @@ public class SimpleTokenStream implements TokenStream {
     /**
      * mReader: to read file.
      */
-    private final Scanner mReader;
-    /**
-     * fileToOpen: file to be opened by scanner.
-     */
-    private final File fileToOpen;
+    private Scanner mReader;
+    private Reader reader;
+    private String body = null;
 
     /**
      * Constructs a SimpleTokenStream to read from the specified file.
      *
      * @param file File to open
-     * @throws java.io.FileNotFoundException Throws exception when file
-     * not found
+     * @throws java.io.FileNotFoundException Throws exception when
+     * file not found
      */
     public SimpleTokenStream(final File file) throws FileNotFoundException {
-        fileToOpen = file;
-        mReader = new Scanner(new FileReader(fileToOpen));
+        //fileToOpen = file;
+        reader = new FileReader(file);
+    }
+
+    /**
+     *
+     * @param text Text to be indexed
+     */
+    public SimpleTokenStream(final String text) {
+        body = text;
+        mReader = new Scanner(body);
+    }
+
+    /**
+     *
+     * @return returns body of the json doc
+     */
+    public final String readFile() {
+        Gson gson = new Gson();
+        Article article = gson.fromJson(reader, Article.class);
+        String articleBody = article.body.toString();
+        return articleBody;
     }
 
     /**
@@ -51,8 +71,8 @@ public class SimpleTokenStream implements TokenStream {
     }
 
     /**
-     * @return Returns the next token from the stream, or null if there is no
-     * token available.
+     * @return Returns the next token from the stream, or null if
+     * there is no token available.
      */
     @Override
     public final String nextToken() {
@@ -74,21 +94,19 @@ public class SimpleTokenStream implements TokenStream {
      */
     public final List<Integer> getTokenPosition(final String token)
         throws FileNotFoundException {
-        Scanner reader = new Scanner(new FileReader(fileToOpen));
-        Pattern p = Pattern.compile("\\b" + Pattern.quote(token) + "\\b");
+        Scanner reader;
+        reader = new Scanner(body);
+        Pattern p = Pattern.compile("\\b" + token + "\\b");
         String line;
         List<Integer> pos = new ArrayList<>();
         int i = 0;
-        while (reader.hasNextLine()) {
-            line = reader.nextLine();
-            Matcher m = p.matcher(line);
+        line = body;
+        Matcher m = p.matcher(line.toLowerCase());
 
-            // indicate all matches on the line
-            while (m.find()) {
-
-                pos.add(m.start());
-            }
-
+        // indicate all matches on the line
+        while (m.find()) {
+            
+            pos.add(m.start());
         }
         return pos;
     }
