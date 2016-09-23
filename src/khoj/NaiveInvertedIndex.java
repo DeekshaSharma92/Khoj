@@ -6,6 +6,7 @@
 package khoj;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class NaiveInvertedIndex {
      * @throws FileNotFoundException
      */
     public final void addTerm(final SimpleTokenStream stream, String term,
-       final int documentID) throws FileNotFoundException {
+        final int documentID) throws FileNotFoundException {
         // TO-DO: add the term to the index hashtable. If the table
         // does not have  an entry for the term, initialize a
         //new ArrayList<Integer>, add the docID to the list, and put
@@ -45,22 +46,29 @@ public class NaiveInvertedIndex {
         // not already contain the docID.
 
         HashMap<Integer, List<Integer>> doc = new HashMap<>();
-        List<Integer> pos = stream.getTokenPosition(term);
+        List<Integer> positionList = new ArrayList<>();
+        int position = stream.getTokenPosition();
         if (!mIndex.containsKey(term)) {
             HashMap<Integer, List<Integer>> tempList = new HashMap<>();
-
-            tempList.put(documentID, pos);
+            positionList.add(position);
+            tempList.put(documentID, positionList);
             mIndex.put(term, tempList);
 
         } else {
             doc = mIndex.get(term);
-            if (!doc.containsKey(documentID)) {
-                doc.put(documentID, pos);
-                mIndex.remove(term);
+            if (doc.containsKey(documentID)) {
+                positionList = doc.get(documentID);
+                if ((positionList.get(positionList.size() - 1) != position)) {
+                    positionList.add(position);
+                    doc.put(documentID, positionList);
+                    mIndex.put(term, doc);
+                }
+            } else {
+                positionList.add(position);
+                doc.put(documentID, positionList);
                 mIndex.put(term, doc);
             }
-            System.out.println(mIndex);
-
+            //System.out.println(mIndex);
         }
 
     }

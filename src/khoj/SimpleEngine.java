@@ -40,6 +40,7 @@ public class SimpleEngine {
         // This is our standard "walk through all .txt files" code.
         Files.walkFileTree(currentWorkingPath, new SimpleFileVisitor<Path>() {
             int mDocumentID = 0;
+
             public FileVisitResult preVisitDirectory(Path dir,
                 final BasicFileAttributes attrs) {
                 // make sure we only process the current working directory
@@ -75,7 +76,7 @@ public class SimpleEngine {
 
         });
 
-        printResults(index, fileNames);
+        //printResults(index, fileNames);
         // Implement the same program as in Homework 1: ask the user
         //for a term, retrieve the postings list for that term,
         //and print the names of the documents which contain the term.
@@ -105,7 +106,9 @@ public class SimpleEngine {
         int i = 0;
         while (streamText.hasNextToken()) {
             text = streamText.nextToken();
+            text = PorterStemmer.processToken(text);
             index.addTerm(streamText, text, docID);
+
         }
     }
 
@@ -135,8 +138,8 @@ public class SimpleEngine {
             longestWord = Math.max(longestWord, terms.length());
         }
         for (int i = 0; i < index.getTermCount(); i++) {
-            HashMap<Integer, List<Integer>> postings =
-                index.getPostings(dict[i]);
+            HashMap<Integer, List<Integer>> postings
+                = index.getPostings(dict[i]);
             System.out.print(dict[i] + ":");
             printSpaces(longestWord - dict[i].length() + 1);
             for (int j = 0; j < postings.size(); j++) {

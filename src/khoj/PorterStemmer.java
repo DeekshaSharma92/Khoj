@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package khoj;
-
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
@@ -14,21 +12,6 @@ import java.util.regex.Pattern;
  */
 public class PorterStemmer {
 
-    /**
-     *
-     * @param args
-     */
-    public static void main(final String[] args) {
-
-        while (true) {
-            System.out.print("\n Enter string to stem:");
-            Scanner userInput = new Scanner(System.in);
-            String token;
-            token = userInput.next();
-            System.out.print(processToken(token));
-        }
-
-    }
     /**
      * fixed numbers.
      */
@@ -245,18 +228,15 @@ public class PorterStemmer {
         // program this step. you have a regex for m=1 and for "Cvc", which
         // you can use to see if m=1 and NOT Cvc.
         if (mGr1.matcher(token).find() && token.endsWith("e")) {
-            System.out.print("here1");
             token = token.substring(0, token.length() - 1);
         } else if (mEq1.matcher(token).find()
             && !cVc.matcher(token).find() && token.endsWith("e")) {
-            System.out.print("here2");
             token = token.substring(0, token.length() - 1);
         }
         // all your code should change the variable token, which represents
         // the stemmed term for the token.
         if (mGr1.matcher(token).find() && dC.matcher(token).find()
             && token.endsWith("ll")) {
-            System.out.print("here3");
             token = token.substring(0, token.length() - 1);
         }
         return token;

@@ -29,6 +29,7 @@ public class SimpleTokenStream implements TokenStream {
     private Scanner mReader;
     private Reader reader;
     private String body = null;
+    int position = 0;
 
     /**
      * Constructs a SimpleTokenStream to read from the specified file.
@@ -88,27 +89,11 @@ public class SimpleTokenStream implements TokenStream {
 
     /**
      *
-     * @param token Token whose position is to be found
      * @return return list of positions
-     * @throws FileNotFoundException Throws file not found error
      */
-    public final List<Integer> getTokenPosition(final String token)
-        throws FileNotFoundException {
-        Scanner reader;
-        reader = new Scanner(body);
-        Pattern p = Pattern.compile("\\b" + token + "\\b");
-        String line;
-        List<Integer> pos = new ArrayList<>();
-        int i = 0;
-        line = body;
-        Matcher m = p.matcher(line.toLowerCase());
-
-        // indicate all matches on the line
-        while (m.find()) {
-            
-            pos.add(m.start());
-        }
-        return pos;
+    public int getTokenPosition() {
+        position++;
+        return position;
     }
 
 }
