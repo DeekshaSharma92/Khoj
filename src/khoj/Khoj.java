@@ -23,7 +23,7 @@ public class Khoj {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MainForm().setVisible(true);
+                new SearchEngineUI().setVisible(true);
             }
         });
         
