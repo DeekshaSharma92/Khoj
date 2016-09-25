@@ -10,5 +10,14 @@ package khoj;
  * @author jass
  */
 public class QueryProcessor {
-    
+
+    private final String query;
+
+    /**
+     *
+     * @param text Query to be processed
+     */
+    public QueryProcessor(final String text) {
+        query = text;
+    }
 }
