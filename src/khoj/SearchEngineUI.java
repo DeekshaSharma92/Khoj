@@ -6,6 +6,7 @@
 package khoj;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -122,18 +123,20 @@ public class SearchEngineUI extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         String query = this.jTextField1.getText();
-        //List<String> results = new ArrayList<>();
+        List<String> results;
        // results.add("jass");
        // results.add("grewal");
         if (!query.isEmpty()) {
             QueryProcessor search = new QueryProcessor(query, indexing);
             int queryType = search.queryType;
             switch (queryType) {
-                case 1: List<String> results = search.SingleWordQuery();
+                case 1: results = search.generalQuery(query);
                     System.out.println(results);
                     break;
-                default:
-                    System.out.println("default");
+                case 2: results = search.generalQuery(query);
+                    System.out.println(results);
+                case 3: results = search.multiWordOrQuery();
+                    System.out.println(results);
             }
             /**
              * DefaultListModel listModel = new DefaultListModel();

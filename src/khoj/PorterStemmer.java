@@ -87,9 +87,11 @@ public class PorterStemmer {
      * @return return processed token
      */
     public static String processToken(String token) {
+       try{
         if (token.length() < THREE) {
             return token; // token must be at least 3 chars
         }
+       
         // step 1a
         // step 1a.1
         if (token.endsWith("sses")) {
@@ -239,7 +241,13 @@ public class PorterStemmer {
             && token.endsWith("ll")) {
             token = token.substring(0, token.length() - 1);
         }
-        return token;
+        
+        }
+       catch (Exception ex)
+       {
+           System.out.println("----------------------------------------");
+       }
+       return token;
     }
     /**
      *

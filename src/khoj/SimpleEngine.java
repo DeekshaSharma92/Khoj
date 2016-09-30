@@ -27,7 +27,8 @@ public class SimpleEngine {
 
     final NaiveInvertedIndex index = new NaiveInvertedIndex();
     // the list of file names that were processed
-        final List<String> fileNames = new ArrayList<>();
+    final List<String> fileNames = new ArrayList<>();
+
     /**
      *
      * @throws IOException Throws Input Output Exception
@@ -36,9 +37,7 @@ public class SimpleEngine {
 
         final Path currentWorkingPath = Paths.get("").toAbsolutePath();
         // the inverted index
-        
 
-        
         // This is our standard "walk through all .txt files" code.
         Files.walkFileTree(currentWorkingPath, new SimpleFileVisitor<Path>() {
             int mDocumentID = 0;
@@ -134,30 +133,29 @@ public class SimpleEngine {
         // as:      document0 document3 document4 document5
         // engines: document1
         // search:  document2 document4
-        /**String[] dict = index.getDictionary();
-        int longestWord = 0;
-        for (String terms : dict) {
-            longestWord = Math.max(longestWord, terms.length());
-        }
-        for (int i = 0; i < index.getTermCount(); i++) {
-            HashMap<Integer, List<Integer>> postings
-                = index.getPostings(dict[i]);
-            System.out.print(dict[i] + ":");
-            printSpaces(longestWord - dict[i].length() + 1);
-            for (int j = 0; j < postings.size(); j++) {
-                // System.out.print(" " + fileNames.get(postings.get()));
-            }
-            System.out.print("\n");
-        }
-        * */
-
+        /**
+         * String[] dict = index.getDictionary(); int longestWord = 0;
+         * for (String terms : dict) { longestWord =
+         * Math.max(longestWord, terms.length()); } for (int i = 0; i
+         * < index.getTermCount(); i++) { HashMap<Integer,
+         * List<Integer>> postings = index.getPostings(dict[i]);
+         * System.out.print(dict[i] + ":"); printSpaces(longestWord -
+         * dict[i].length() + 1); for (int j = 0; j < postings.size();
+         * j++) { // System.out.print(" " +
+         * fileNames.get(postings.get())); } System.out.print("\n"); }
+        *
+         */
     }
-    
-    public List<String> getDocumentNames(Integer[]  docIds)
-    {
+
+    /**
+     *
+     * @param docIds
+     * @return Returns Doc Names as docIds
+     */
+    public final List<String> getDocumentNames(final List<Integer> docIds) {
         List<String> docNames = new ArrayList<>();
-        for (int docId= 0; docId < docIds.length; docId++) {
-            docNames.add(fileNames.get(docIds[docId]));
+        for (int docId = 0; docId < docIds.size(); docId++) {
+            docNames.add(fileNames.get(docIds.get(docId)));
         }
         return docNames;
     }
