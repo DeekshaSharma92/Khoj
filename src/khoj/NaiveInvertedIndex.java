@@ -100,14 +100,22 @@ public class NaiveInvertedIndex {
 
     /**
      *
+     * @param term
      * @return
      */
-    public String[] getDictionary() {
+    public Integer[] getDocIds(String term) {
         // TO-DO: fill an array of Strings with all the keys from the hashtable.
         // Sort the array and return it.
-        String[] listTerms;
-        listTerms = mIndex.keySet().toArray(new String[mIndex.size()]);
-        Arrays.sort(listTerms);
-        return listTerms;
+        HashMap<Integer, List<Integer>> docIds;
+        docIds = mIndex.get(term);
+        Integer[] listDocIds = {};
+        try{
+        listDocIds = docIds.keySet().toArray(new Integer[docIds.size()]);
+        }
+        catch (Exception ex)
+        {
+            
+        }
+        return listDocIds;
     }
 }

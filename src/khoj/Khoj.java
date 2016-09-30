@@ -6,6 +6,8 @@
 package khoj;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,11 +25,13 @@ public class Khoj {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SearchEngineUI().setVisible(true);
+                try {
+                    new SearchEngineUI().setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(Khoj.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
-        SimpleEngine indexing = new SimpleEngine();
-        indexing.startIndexing();
     }
 }

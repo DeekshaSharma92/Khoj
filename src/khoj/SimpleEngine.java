@@ -25,18 +25,20 @@ import java.lang.System;
  */
 public class SimpleEngine {
 
+    final NaiveInvertedIndex index = new NaiveInvertedIndex();
+    // the list of file names that were processed
+        final List<String> fileNames = new ArrayList<>();
     /**
      *
      * @throws IOException Throws Input Output Exception
      */
-    public final void startIndexing() throws IOException {
+    public SimpleEngine() throws IOException {
 
         final Path currentWorkingPath = Paths.get("").toAbsolutePath();
         // the inverted index
-        final NaiveInvertedIndex index = new NaiveInvertedIndex();
+        
 
-        // the list of file names that were processed
-        final List<String> fileNames = new ArrayList<>();
+        
         // This is our standard "walk through all .txt files" code.
         Files.walkFileTree(currentWorkingPath, new SimpleFileVisitor<Path>() {
             int mDocumentID = 0;
@@ -132,7 +134,7 @@ public class SimpleEngine {
         // as:      document0 document3 document4 document5
         // engines: document1
         // search:  document2 document4
-        String[] dict = index.getDictionary();
+        /**String[] dict = index.getDictionary();
         int longestWord = 0;
         for (String terms : dict) {
             longestWord = Math.max(longestWord, terms.length());
@@ -147,7 +149,17 @@ public class SimpleEngine {
             }
             System.out.print("\n");
         }
+        * */
 
+    }
+    
+    public List<String> getDocumentNames(Integer[]  docIds)
+    {
+        List<String> docNames = new ArrayList<>();
+        for (int docId= 0; docId < docIds.length; docId++) {
+            docNames.add(fileNames.get(docIds[docId]));
+        }
+        return docNames;
     }
 
     /**
