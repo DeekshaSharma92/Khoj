@@ -21,15 +21,15 @@ public class QueryProcessor {
      * query Type 3: Union Query Type 4: AND Query
      */
     final int queryType;
-    final SimpleEngine engine;
-    final NaiveInvertedIndex index;
+    final PositionalInvertedIndex engine;
+    final IndexFile index;
 
     /**
      *
      * @param text Query to be processed
-     * @param indexing Object of SimpleEngine
+     * @param indexing Object of PositionalInvertedIndex
      */
-    public QueryProcessor(final String text, final SimpleEngine indexing) {
+    public QueryProcessor(final String text, final PositionalInvertedIndex indexing) {
         query = text;
         engine = indexing;
         index = engine.index;

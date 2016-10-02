@@ -10,18 +10,24 @@ import java.util.List;
 
 /**
  *
- * @author deeksha
+ * @author jass
  */
 public class SearchEngineUI extends javax.swing.JFrame {
-
-    SimpleEngine indexing;
+    /**
+     * PositionalInvertedIndex class object to start positional Inverted Index
+     */
+    PositionalInvertedIndex indexing ;
     /**
      * Creates new form SearchEngineUI
      * @throws java.io.IOException
      */
     public SearchEngineUI() throws IOException {
         initComponents();
-        indexing = new SimpleEngine();
+        System.out.println("******* Building Positional Inverted "
+           + "Index *******");
+        indexing = new PositionalInvertedIndex();
+        System.out.println("******* Building SoundEx "
+           + "Index *******");
         SoundExIndexing soundIndexing = new SoundExIndexing();
     }
     final static String newline = "\n";

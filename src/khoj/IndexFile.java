@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author jass
  */
-public class NaiveInvertedIndex {
+public class IndexFile {
 
     /**
      *
@@ -25,7 +25,7 @@ public class NaiveInvertedIndex {
     /**
      *
      */
-    public NaiveInvertedIndex() {
+    public IndexFile() {
         mIndex = new HashMap<>();
     }
 

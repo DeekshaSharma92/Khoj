@@ -23,13 +23,13 @@ import java.lang.System;
  * A very simple search engine. Uses an inverted index over a folder
  * of TXT files.
  */
-public class SimpleEngine {
+public class PositionalInvertedIndex {
 
     /**
      * the inverted index.
      *
      */
-    final NaiveInvertedIndex index = new NaiveInvertedIndex();
+    final IndexFile index = new IndexFile();
     /**
      * the list of file names that were processed.
      */
@@ -39,7 +39,7 @@ public class SimpleEngine {
      *
      * @throws IOException Throws Input Output Exception
      */
-    public SimpleEngine() throws IOException {
+    public PositionalInvertedIndex() throws IOException {
 
         final Path currentWorkingPath = Paths.get("./json/articles/")
             .toAbsolutePath();
@@ -99,7 +99,7 @@ public class SimpleEngine {
      * @throws FileNotFoundException Throws file not found exception
      */
     private static void indexFile(final File file,
-        final NaiveInvertedIndex index, final int docID)
+        final IndexFile index, final int docID)
         throws FileNotFoundException {
         // TO-DO: finish this method for indexing a particular file.
         // Construct a SimpleTokenStream for the given File.
