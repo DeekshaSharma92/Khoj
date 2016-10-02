@@ -27,7 +27,7 @@ public class SimpleTokenStream implements TokenStream {
      * mReader: to read file.
      */
     private Scanner mReader;
-    private Reader reader;
+    public Reader reader;
     private String body = null;
     int position = 0;
 
@@ -56,12 +56,22 @@ public class SimpleTokenStream implements TokenStream {
      *
      * @return returns body of the json doc
      */
-    public final String readFile() {
-        Gson gson = new Gson();
-        Article article = gson.fromJson(reader, Article.class);
+    public final String readFile(Article article) {
+        
         String articleBody = article.body.toString();
         return articleBody;
     }
+    
+    /**
+     *
+     * @return returns author's name of the json doc
+     */
+    public final String readFile(Authors author) {
+        
+        String authorName = author.author.toString();
+        return authorName;
+    }
+
 
     /**
      * @return Returns true if the stream has tokens remaining.

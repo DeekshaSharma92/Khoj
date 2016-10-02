@@ -5,6 +5,7 @@
  */
 package khoj;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.lang.System;
 
@@ -25,9 +25,15 @@ import java.lang.System;
  */
 public class SimpleEngine {
 
+    /**
+     * the inverted index.
+     *
+     */
     final NaiveInvertedIndex index = new NaiveInvertedIndex();
-    // the list of file names that were processed
-    final List<String> fileNames = new ArrayList<>();
+    /**
+     * the list of file names that were processed.
+     */
+    private final List<String> fileNames = new ArrayList<>();
 
     /**
      *
@@ -35,8 +41,8 @@ public class SimpleEngine {
      */
     public SimpleEngine() throws IOException {
 
-        final Path currentWorkingPath = Paths.get("").toAbsolutePath();
-        // the inverted index
+        final Path currentWorkingPath = Paths.get("./json/articles/")
+            .toAbsolutePath();
 
         // This is our standard "walk through all .txt files" code.
         Files.walkFileTree(currentWorkingPath, new SimpleFileVisitor<Path>() {
@@ -59,7 +65,7 @@ public class SimpleEngine {
                     // we have found a .txt file; add its name to
                     //the fileName list, then index the file and
                     //increase the document ID counter.
-                    System.out.println("Indexing file " + file.getFileName());
+                    // System.out.println("Indexing file " + file.getFileName());
                     fileNames.add(file.getFileName().toString());
                     indexFile(file.toFile(), index, mDocumentID);
                     mDocumentID++;
@@ -76,11 +82,8 @@ public class SimpleEngine {
             }
 
         });
-
-        //printResults(index, fileNames);
-        // Implement the same program as in Homework 1: ask the user
-        //for a term, retrieve the postings list for that term,
-        //and print the names of the documents which contain the term.
+        System.out.println("Position Inverted Indexing Completed.\n"
+            + "Total Documents Indexed: " + fileNames.size());
     }
 
     /**
@@ -102,54 +105,23 @@ public class SimpleEngine {
         // Construct a SimpleTokenStream for the given File.
         // Read each token from the stream and add it to the index.
         SimpleTokenStream streamFile = new SimpleTokenStream(file);
-        String text = streamFile.readFile();
+        Gson gson = new Gson();
+        Article article = gson.fromJson(streamFile.reader, Article.class);
+        String text = streamFile.readFile(article);
         SimpleTokenStream streamText = new SimpleTokenStream(text);
         int i = 0;
         while (streamText.hasNextToken()) {
             text = streamText.nextToken();
-            text = PorterStemmer.processToken(text);
-            index.addTerm(streamText, text, docID);
-
+            if (text != null) {
+                text = PorterStemmer.processToken(text);
+                index.addTerm(streamText, text, docID);
+            }
         }
     }
 
     /**
      *
-     * @param index
-     * @param fileNames
-     */
-    private static void printResults(final NaiveInvertedIndex index,
-        final List<String> fileNames) {
-
-        // TO-DO: print the inverted index.
-        // Retrieve the dictionary from the index. (It will already be sorted.)
-        // For each term in the dictionary, retrieve the postings list for the
-        // term. Use the postings list to print the list of document names that
-        // contain the term. (The document ID in a postings list corresponds to
-        // an index in the fileNames list.)
-        // Print the postings list so they are all left-aligned starting at the
-        // same column, one space after the longest of the term lengths.
-        //Example:
-        // as:      document0 document3 document4 document5
-        // engines: document1
-        // search:  document2 document4
-        /**
-         * String[] dict = index.getDictionary(); int longestWord = 0;
-         * for (String terms : dict) { longestWord =
-         * Math.max(longestWord, terms.length()); } for (int i = 0; i
-         * < index.getTermCount(); i++) { HashMap<Integer,
-         * List<Integer>> postings = index.getPostings(dict[i]);
-         * System.out.print(dict[i] + ":"); printSpaces(longestWord -
-         * dict[i].length() + 1); for (int j = 0; j < postings.size();
-         * j++) { // System.out.print(" " +
-         * fileNames.get(postings.get())); } System.out.print("\n"); }
-        *
-         */
-    }
-
-    /**
-     *
-     * @param docIds
+     * @param docIds list of document Id
      * @return Returns Doc Names as docIds
      */
     public final List<String> getDocumentNames(final List<Integer> docIds) {
@@ -158,15 +130,5 @@ public class SimpleEngine {
             docNames.add(fileNames.get(docIds.get(docId)));
         }
         return docNames;
-    }
-
-    /**
-     *
-     * @param spaces Adds empty spaces
-     */
-    private static void printSpaces(final int spaces) {
-        for (int i = 0; i < spaces; i++) {
-            System.out.print(" ");
-        }
     }
 }

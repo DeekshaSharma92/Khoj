@@ -6,7 +6,6 @@
 package khoj;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +22,7 @@ public class SearchEngineUI extends javax.swing.JFrame {
     public SearchEngineUI() throws IOException {
         initComponents();
         indexing = new SimpleEngine();
+        SoundExIndexing soundIndexing = new SoundExIndexing();
     }
     final static String newline = "\n";
 

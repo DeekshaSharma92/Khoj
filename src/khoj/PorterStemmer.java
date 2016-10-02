@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package khoj;
+
 import java.util.regex.Pattern;
 
 /**
@@ -87,11 +88,10 @@ public class PorterStemmer {
      * @return return processed token
      */
     public static String processToken(String token) {
-       try{
         if (token.length() < THREE) {
             return token; // token must be at least 3 chars
         }
-       
+
         // step 1a
         // step 1a.1
         if (token.endsWith("sses")) {
@@ -125,7 +125,7 @@ public class PorterStemmer {
             }
         } else if (token.endsWith("ed")) {
             // program the rest of 1b. set the boolean doStep1bb
-        //to true if Step 1b* should be performed.
+            //to true if Step 1b* should be performed.
             String stem = token.substring(0, token.length() - 2);
 
             if (sVs.matcher(stem).find()) {
@@ -209,16 +209,16 @@ public class PorterStemmer {
         // program this step similar to step 2/3, except now the stem must have
         // measure > 1.
         String[][] step4pairs = {new String[]{"al", ""},
-            new String[]{"ance", ""}, new String[]{"ence", ""},
-            new String[]{"er", ""}, new String[]{"ic", ""},
-            new String[]{"able", ""}, new String[]{"ible", ""},
-            new String[]{"ant", ""}, new String[]{"ement", ""},
-            new String[]{"ment", ""}, new String[]{"ent", ""},
-            new String[]{"sion", ""}, new String[]{"tion", ""},
-            new String[]{"ou", ""}, new String[]{"ism", ""},
-            new String[]{"ate", ""}, new String[]{"iti", ""},
-            new String[]{"ous", ""}, new String[]{"ive", ""},
-            new String[]{"ize", ""}
+        new String[]{"ance", ""}, new String[]{"ence", ""},
+        new String[]{"er", ""}, new String[]{"ic", ""},
+        new String[]{"able", ""}, new String[]{"ible", ""},
+        new String[]{"ant", ""}, new String[]{"ement", ""},
+        new String[]{"ment", ""}, new String[]{"ent", ""},
+        new String[]{"sion", ""}, new String[]{"tion", ""},
+        new String[]{"ou", ""}, new String[]{"ism", ""},
+        new String[]{"ate", ""}, new String[]{"iti", ""},
+        new String[]{"ous", ""}, new String[]{"ive", ""},
+        new String[]{"ize", ""}
         };
         token = suffixReplacementHelper(token, mGr1, step4pairs);
 
@@ -241,14 +241,9 @@ public class PorterStemmer {
             && token.endsWith("ll")) {
             token = token.substring(0, token.length() - 1);
         }
-        
-        }
-       catch (Exception ex)
-       {
-           System.out.println("----------------------------------------");
-       }
-       return token;
+        return token;
     }
+
     /**
      *
      * @param token
