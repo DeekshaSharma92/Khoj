@@ -68,7 +68,15 @@ public class SimpleTokenStream implements TokenStream {
      */
     public final String readFile(Authors author) {
         
-        String authorName = author.author.toString();
+        String authorName = "";
+        try{
+        authorName = author.author.toString();
+        }
+        catch (Exception ex){
+            authorName = "invalid name";
+            System.out.println("Invalid Json files");
+            System.exit(0);
+        }
         return authorName;
     }
 
@@ -91,7 +99,7 @@ public class SimpleTokenStream implements TokenStream {
             return null;
         }
 
-        String next = mReader.next().replaceAll("\\W", "").toLowerCase();
+        String next = mReader.next();
 
         return next.length() > 0 ? next
             : hasNextToken() ? nextToken() : null;

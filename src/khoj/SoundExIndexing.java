@@ -103,15 +103,17 @@ public class SoundExIndexing {
         Gson gson = new Gson();
         Authors author = gson.fromJson(streamFile.reader, Authors.class);
         String text = streamFile.readFile(author);
-        SimpleTokenStream streamText = new SimpleTokenStream(text);
-        int i = 0;
-        while (streamText.hasNextToken()) {
-            text = streamText.nextToken();
-            if (text != null) {
+        if ("invalid name".equals(text)) {
+            SimpleTokenStream streamText = new SimpleTokenStream(text);
+            int i = 0;
+            while (streamText.hasNextToken()) {
+                text = streamText.nextToken();
+                if (text != null) {
 
-                SoundEx ex = new SoundEx(text);
-                text = ex.characterMapping();
-                addTerm(text, docID);
+                    SoundEx ex = new SoundEx(text);
+                    text = ex.characterMapping();
+                    addTerm(text, docID);
+                }
             }
         }
     }

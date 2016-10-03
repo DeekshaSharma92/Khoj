@@ -31,6 +31,7 @@ public class PositionalInvertedIndex {
      */
     static IndexFile index = new IndexFile();
     static String filePath;
+    BiwordIndex bwindex= new BiwordIndex();
     /**
      * the list of file names that were processed.
      */
@@ -70,7 +71,6 @@ public class PositionalInvertedIndex {
                     // System.out.println("Indexing file " + file.getFileName());
                     fileNames.add(file.getFileName().toString());
                     indexFile(file.toFile(), index, mDocumentID);
-                    BiwordIndex bwindex= new BiwordIndex();
                     bwindex.tokenize(file.toFile(), mDocumentID);
                     mDocumentID++;
                 }

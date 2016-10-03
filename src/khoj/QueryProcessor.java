@@ -27,6 +27,7 @@ public class QueryProcessor {
     final PositionalInvertedIndex engine;
     IndexFile index;
     final SoundExIndexing soundIndexing;
+    final Normalize normalizeToken = new Normalize();
 
     /**
      *
@@ -110,38 +111,46 @@ public class QueryProcessor {
         String phrase = "";
         boolean isPhrase = false;
         for (String word : words) {
-
+            
             if (word.startsWith("\"") && word.endsWith("\"")) {
-                word = word.replaceAll("\\W", "").toLowerCase();
+                word = normalizeToken.NormalizeToken(word).get(0);
                 if (!word.isEmpty()) {
                     setDocIds.add(index.getDocIds(word));
                 }
             }
             if (word.startsWith("\"")) {
-                word = word.replaceAll("\\W", "").toLowerCase();
+                word = normalizeToken.NormalizeToken(word).get(0);
+                word = PorterStemmer.processToken(word);
                 phrase = phrase + word + " ";
                 isPhrase = true;
             } else if (word.endsWith("\"")) {
-                word = word.replaceAll("\\W", "").toLowerCase();
+                word = normalizeToken.NormalizeToken(word).get(0);
+                word = PorterStemmer.processToken(word);
                 phrase = phrase + word + " ";
                 setDocIds.add(phraseQuery(phrase));
                 phrase = "";
+                isPhrase = false;
             } else if (isPhrase) {
                 word = word.replaceAll("\\W", "").toLowerCase();
                 phrase = phrase + word + " ";
             } else {
-                word = word.replaceAll("\\W", "").toLowerCase();
-                word = PorterStemmer.processToken(word);
-                if (!word.isEmpty()) {
-                    setDocIds.add(index.getDocIds(word));
+                List<String> normalizedTokens = normalizeToken
+                    .NormalizeToken(word);
+                for (String token : normalizedTokens) {
+                    token = PorterStemmer.processToken(token);
+                    if (!token.isEmpty()) {
+                        setDocIds.add(index.getDocIds(token));
+                    }
                 }
             }
         }
 
         List<Integer> tempDocIdList = new ArrayList<>();
+        boolean firstIteration = true;
         for (List<Integer> docIdList : setDocIds) {
-            if (tempDocIdList.isEmpty()) {
+            if (firstIteration) {
                 tempDocIdList = docIdList;
+                firstIteration = false;
             } else {
                 tempDocIdList.retainAll(docIdList);
             }
@@ -155,7 +164,7 @@ public class QueryProcessor {
         String[] words = query.split("\\+");
         List<List<Integer>> setDocIds = new ArrayList<>();
         for (String word : words) {
-            setDocIds.add(andQuery(word));
+            setDocIds.add(andQuery(word.trim()));
         }
         List<Integer> tempDocIdList = new ArrayList<>();
         for (List<Integer> docIdList : setDocIds) {
@@ -172,39 +181,44 @@ public class QueryProcessor {
     public final List<Integer> phraseQuery(String phrase) {
         List<Integer> resultDocIds = new ArrayList<>();
         String[] words = phrase.split(" ");
-        List<HashMap<Integer, List<Integer>>> postings = new ArrayList<>();
-        for (String word : words) {
-            word = PorterStemmer.processToken(word.toLowerCase());
-            postings.add(index.getPostings(word));
-        }
-        HashMap<Integer, List<Integer>> docPositionMap = postings.get(0);
-        if (docPositionMap != null) {
-            for (int i = 1; i < postings.size(); i++) {
-                (docPositionMap.keySet()).retainAll((postings.get(i).keySet()));
+        if (words.length == 2) {
+            BiwordIndex biword = engine.bwindex;
+            
+            resultDocIds = biword.biwordQuery(phrase);
+        } else {
+            List<HashMap<Integer, List<Integer>>> postings = new ArrayList<>();
+            for (String word : words) {
+                word = PorterStemmer.processToken(word.toLowerCase());
+                postings.add(index.getPostings(word));
             }
-            List<Integer> docIdsList = new ArrayList<>(docPositionMap.keySet());
-            //System.out.println(docIdsList);
+            HashMap<Integer, List<Integer>> docPositionMap = postings.get(0);
+            if (docPositionMap != null) {
+                for (int i = 1; i < postings.size(); i++) {
+                    (docPositionMap.keySet()).retainAll((postings.get(i).keySet()));
+                }
+                List<Integer> docIdsList = new ArrayList<>(docPositionMap.keySet());
 
-            for (int i = 0; i < docPositionMap.size(); i++) {
-                List<List<Integer>> positionList = new ArrayList<>();
-                Integer docId = docIdsList.get(i);
-                for (String word : words) {
-                    word = PorterStemmer.processToken(word.toLowerCase());
-                    HashMap<Integer, List<Integer>> posting
-                        = index.getPostings(word);
-                    List<Integer> positions = posting.get(docId);
-                    positionList.add(positions);
-                }
-                List<Integer> tempList = positionList.get(0);
-                for (int j = 1; j < positionList.size(); j++) {
-                    List<Integer> nextList = positionList.get(j);
-                    for (int pos = 0; pos < nextList.size(); pos++) {
-                        nextList.set(pos, nextList.get(pos) - j);
+                for (int i = 0; i < docPositionMap.size(); i++) {
+                    List<List<Integer>> positionList = new ArrayList<>();
+                    Integer docId = docIdsList.get(i);
+                    for (String word : words) {
+                        word = PorterStemmer.processToken(word.toLowerCase());
+                        HashMap<Integer, List<Integer>> posting
+                            = index.getPostings(word);
+                        List<Integer> positions = posting.get(docId);
+                        positionList.add(positions);
                     }
-                    tempList.retainAll(nextList);
-                }
-                if (!tempList.isEmpty()) {
-                    resultDocIds.add(docId);
+                    List<Integer> tempList = positionList.get(0);
+                    for (int j = 1; j < positionList.size(); j++) {
+                        List<Integer> nextList = positionList.get(j);
+                        for (int pos = 0; pos < nextList.size(); pos++) {
+                            nextList.set(pos, nextList.get(pos) - j);
+                        }
+                        tempList.retainAll(nextList);
+                    }
+                    if (!tempList.isEmpty()) {
+                        resultDocIds.add(docId);
+                    }
                 }
             }
         }
