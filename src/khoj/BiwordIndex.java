@@ -30,22 +30,25 @@ public class BiwordIndex  {
     
     while(streamText.hasNextToken()){
         
-        streamText.nextToken();
-        biwordList.add(query);
+        String text = streamText.nextToken();
         if(biwordList.size()==2)
         {
-            bwphrase= biwordList.toArray()[0] + "," + biwordList.toArray()[1];
+            bwphrase= biwordList.get(0) + " " + biwordList.get(1);
             compose(bwphrase,documentID);  
             biwordList.remove(0);
+            biwordList.add(text);
+        }
+        else{
+            biwordList.add(text);
         }
         
     }
     }
     Map<String, List<Integer>> biwordMap = new HashMap<>();
-    List<Integer> phrasedocID= new ArrayList<>();
+    
     public void compose(String term, int documentID){
         String biwordPhrase = term;
-        //List<Integer> phrasedocID= new ArrayList<>();
+        List<Integer> phrasedocID= new ArrayList<>();
         if(!biwordMap.containsKey(biwordPhrase))
         {
             
@@ -60,12 +63,9 @@ public class BiwordIndex  {
                 phrasedocID.add(documentID);
                 biwordMap.put(biwordPhrase, phrasedocID);
             }
-            else
-            {
-                phrasedocID.add(documentID);
-                biwordMap.put(biwordPhrase, phrasedocID);
-            }
+            
         }  
+       
     }
     }
     

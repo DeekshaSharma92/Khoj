@@ -59,7 +59,7 @@ public class PositionalInvertedIndex {
 
             @Override
             public FileVisitResult visitFile(final Path file,
-                final BasicFileAttributes attrs) throws FileNotFoundException {
+                final BasicFileAttributes attrs) throws FileNotFoundException, IOException {
                 // only process .json files
                 if (file.toString().endsWith(".json")) {
                     // we have found a .txt file; add its name to
@@ -68,6 +68,8 @@ public class PositionalInvertedIndex {
                     // System.out.println("Indexing file " + file.getFileName());
                     fileNames.add(file.getFileName().toString());
                     indexFile(file.toFile(), index, mDocumentID);
+                    BiwordIndex bwindex= new BiwordIndex();
+                    bwindex.tokenize(file.toFile(), mDocumentID);
                     mDocumentID++;
                 }
                 return FileVisitResult.CONTINUE;
