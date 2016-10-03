@@ -30,24 +30,23 @@ public class SoundExIndexing {
     /**
      * the list of file names that were processed.
      */
-    private final List<String> fileNames = new ArrayList<>();
+    final List<String> fileNames = new ArrayList<>();
+    public static String filePath;
 
     /**
      * HashMap for soundEx index.
      */
-    private final HashMap<String, List<Integer>> soundExIndex;
+    public final HashMap<String, List<Integer>> soundExIndex = new HashMap<>();
 
     /**
      * default constructor.
      *
      * @throws IOException Throws Input Output Exception
      */
-    public SoundExIndexing() throws IOException {
-
-        soundExIndex = new HashMap<>();
-
-        final Path currentWorkingPath = Paths.get("./json/authors/")
+    public void startIndexing(String path) throws IOException {
+        final Path currentWorkingPath = Paths.get(path)
             .toAbsolutePath();
+        filePath = currentWorkingPath.toString();
 
         // This is our standard "walk through all author .json files" code.
         Files.walkFileTree(currentWorkingPath,
@@ -72,8 +71,8 @@ public class SoundExIndexing {
                     // we have found a .txt file; add its name to
                     //the fileName list, then index the file and
                     //increase the document ID counter.
-                   // System.out.println("Indexing file "
-                   //     + file.getFileName());
+                    // System.out.println("Indexing file "
+                    //     + file.getFileName());
                     fileNames.add(file.getFileName().toString());
                     indexFile(file.toFile(), mDocumentID);
                     mDocumentID++;
@@ -90,8 +89,6 @@ public class SoundExIndexing {
             }
 
         });
-        System.out.println("SoundEx Indexing Completed.\n"
-        + "Total Documents Indexed: " + fileNames.size());
     }
 
     /**
@@ -111,6 +108,7 @@ public class SoundExIndexing {
         while (streamText.hasNextToken()) {
             text = streamText.nextToken();
             if (text != null) {
+
                 SoundEx ex = new SoundEx(text);
                 text = ex.characterMapping();
                 addTerm(text, docID);
@@ -120,10 +118,26 @@ public class SoundExIndexing {
 
     /**
      *
+     * @param docIds list of document Id
+     * @return Returns Doc Names as docIds
+     */
+    public final List<String> getDocumentNames(final List<Integer> docIds) {
+        List<String> docNames = new ArrayList<>();
+        if (docIds != null) {
+            for (int docId = 0; docId < docIds.size(); docId++) {
+                docNames.add(fileNames.get(docIds.get(docId)));
+            }
+        }
+        return docNames;
+    }
+
+    /**
+     *
      * @param text to be indexed.
      * @param docID docId of file.
      */
     private void addTerm(final String text, final int docID) {
+
         List<Integer> docIdList = new ArrayList<>();
         if (!soundExIndex.containsKey(text)) {
             docIdList.add(docID);
@@ -135,6 +149,21 @@ public class SoundExIndexing {
                 soundExIndex.put(text, docIdList);
             }
         }
+
+    }
+
+    public List<String> soundExQuery(String term) {
+        List<String> result = new ArrayList<>();
+        SoundEx ex = new SoundEx(term);
+        String soundCode = ex.characterMapping();
+        List<Integer> docIds = soundExIndex.get(soundCode);
+        result = getDocumentNames(docIds);
+        return result;
+
+    }
+
+    public final String returnFilePath() {
+        return filePath;
     }
 
     /**

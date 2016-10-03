@@ -7,7 +7,6 @@ package khoj;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class IndexFile {
      * @param documentID
      * @throws FileNotFoundException
      */
-    public final void addTerm(final SimpleTokenStream stream, String term,
+    public final void addTerm(final SimpleTokenStream stream, String word,
         final int documentID) throws FileNotFoundException {
         // TO-DO: add the term to the index hashtable. If the table
         // does not have  an entry for the term, initialize a
@@ -48,29 +47,38 @@ public class IndexFile {
         HashMap<Integer, List<Integer>> doc = new HashMap<>();
         List<Integer> positionList = new ArrayList<>();
         int position = stream.getTokenPosition();
-        if (!mIndex.containsKey(term)) {
-            HashMap<Integer, List<Integer>> tempList = new HashMap<>();
-            positionList.add(position);
-            tempList.put(documentID, positionList);
-            mIndex.put(term, tempList);
+        Normalize normalizeToken = new Normalize();
+        List<String> tokenList = normalizeToken.NormalizeToken(word);
+        for (String term : tokenList) {
+            term = PorterStemmer.processToken(term);
+            if (!mIndex.containsKey(term)) {
+                HashMap<Integer, List<Integer>> tempList = new HashMap<>();
+                positionList.add(position);
+                tempList.put(documentID, positionList);
+                mIndex.put(term, tempList);
 
-        } else {
-            doc = mIndex.get(term);
-            if (doc.containsKey(documentID)) {
-                positionList = doc.get(documentID);
-                if ((positionList.get(positionList.size() - 1) != position)) {
+            } else {
+                doc = mIndex.get(term);
+                if (doc.containsKey(documentID)) {
+                    positionList = doc.get(documentID);
+                    if ((positionList.get(positionList.size() - 1) != position)) {
+                        positionList.add(position);
+                        doc.put(documentID, positionList);
+                        mIndex.put(term, doc);
+                    }
+                } else {
                     positionList.add(position);
                     doc.put(documentID, positionList);
                     mIndex.put(term, doc);
                 }
-            } else {
-                positionList.add(position);
-                doc.put(documentID, positionList);
-                mIndex.put(term, doc);
+                //System.out.println(mIndex);
             }
-            //System.out.println(mIndex);
         }
+    }
 
+    public List<String> getVocab() {
+        List<String> vocab = new ArrayList<>(mIndex.keySet());
+        return vocab;
     }
 
     /**
@@ -109,12 +117,10 @@ public class IndexFile {
         HashMap<Integer, List<Integer>> docIds;
         docIds = mIndex.get(term);
         List<Integer> listDocIds = new ArrayList<>();
-        try{
-        listDocIds = new ArrayList<>(docIds.keySet());
-        }
-        catch (Exception ex)
-        {
-            
+        try {
+            listDocIds = new ArrayList<>(docIds.keySet());
+        } catch (Exception ex) {
+
         }
         return listDocIds;
     }

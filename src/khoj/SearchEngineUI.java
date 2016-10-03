@@ -5,30 +5,40 @@
  */
 package khoj;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 /**
  *
  * @author jass
  */
 public class SearchEngineUI extends javax.swing.JFrame {
+
     /**
-     * PositionalInvertedIndex class object to start positional Inverted Index
+     * PositionalInvertedIndex class object to start positional
+     * Inverted Index
      */
-    PositionalInvertedIndex indexing ;
+    SoundExIndexing soundIndexing = new SoundExIndexing();
+    PositionalInvertedIndex indexing = new PositionalInvertedIndex();
+
     /**
      * Creates new form SearchEngineUI
+     *
      * @throws java.io.IOException
      */
     public SearchEngineUI() throws IOException {
         initComponents();
-        System.out.println("******* Building Positional Inverted "
-           + "Index *******");
-        indexing = new PositionalInvertedIndex();
-        System.out.println("******* Building SoundEx "
-           + "Index *******");
-        SoundExIndexing soundIndexing = new SoundExIndexing();
+        DefaultListModel model = new DefaultListModel();
+        jList1.setModel(model);
+
     }
     final static String newline = "\n";
 
@@ -48,14 +58,15 @@ public class SearchEngineUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 0, 0)));
         jPanel2.setForeground(javax.swing.UIManager.getDefaults().getColor("textHighlight"));
 
-        jLabel1.setFont(new java.awt.Font("Khmer OS System", 1, 15)); // NOI18N
-        jLabel1.setText("Enter the term:");
+        jLabel1.setFont(new java.awt.Font("Khmer OS System", 0, 12)); // NOI18N
+        jLabel1.setText("Enter the query:");
 
         jButton1.setFont(new java.awt.Font("TakaoPGothic", 1, 15)); // NOI18N
         jButton1.setText("Go");
@@ -73,21 +84,17 @@ public class SearchEngineUI extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))
-                .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
@@ -96,20 +103,34 @@ public class SearchEngineUI extends javax.swing.JFrame {
                 .addGap(144, 144, 144)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addGap(53, 53, 53)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                .addGap(32, 32, 32)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -129,29 +150,61 @@ public class SearchEngineUI extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         String query = this.jTextField1.getText();
-        List<String> results;
-       // results.add("jass");
-       // results.add("grewal");
+        List<String> results = new ArrayList<>();
+        DefaultListModel model = new DefaultListModel();
         if (!query.isEmpty()) {
-            QueryProcessor search = new QueryProcessor(query, indexing);
+            QueryProcessor search = null;
+            try {
+                search = new QueryProcessor(query, soundIndexing,
+                    indexing);
+            } catch (IOException ex) {
+                Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
             int queryType = search.queryType;
             switch (queryType) {
-                case 1: results = search.generalQuery(query);
-                    System.out.println(results);
+                case 1:
+                    results = search.multiWordOrQuery();
+
+                    jLabel3.setText("Found " + results.size() + " documents");
+
                     break;
-                case 2: results = search.generalQuery(query);
-                    System.out.println(results);
-                case 3: results = search.multiWordOrQuery();
-                    System.out.println(results);
+                case 2: {
+                    try {
+                        results = search.specialQuery();
+                        if (results.size() > 0) {
+                            jLabel3.setText("Found " + results.size() + " documents");
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            /**
-             * DefaultListModel listModel = new DefaultListModel();
-             * jList1 = new JList(listModel); listModel.clear();
-             * jList1.setModel(listModel);
-            *
-             */
+
+            Collections.sort(results);
+            for (String result : results) {
+                model.addElement(result);
+            }
         }
+
+        jList1.setModel(model);
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        // TODO add your handling code here:
+        String clickedValue = jList1.getSelectedValue();
+        String fileName;
+        if (clickedValue.contains("article")) {
+            fileName = indexing.returnFilePath() + "/" + clickedValue;
+        } else {
+            fileName = soundIndexing.returnFilePath() + "/" + clickedValue;
+        }
+        File file = new File(fileName);
+        try {
+            java.awt.Desktop.getDesktop().open(file);
+        } catch (IOException ex) {
+            Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jList1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -161,6 +214,7 @@ public class SearchEngineUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

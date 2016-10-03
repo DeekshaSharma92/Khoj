@@ -29,20 +29,22 @@ public class PositionalInvertedIndex {
      * the inverted index.
      *
      */
-    final IndexFile index = new IndexFile();
+    static IndexFile index = new IndexFile();
+    static String filePath;
     /**
      * the list of file names that were processed.
      */
-    private final List<String> fileNames = new ArrayList<>();
+    public final List<String> fileNames = new ArrayList<>();
 
     /**
      *
      * @throws IOException Throws Input Output Exception
      */
-    public PositionalInvertedIndex() throws IOException {
+    public IndexFile startIndexing(String path) throws IOException {
 
-        final Path currentWorkingPath = Paths.get("./json/articles/")
+        final Path currentWorkingPath = Paths.get(path)
             .toAbsolutePath();
+        filePath = currentWorkingPath.toString();
 
         // This is our standard "walk through all .txt files" code.
         Files.walkFileTree(currentWorkingPath, new SimpleFileVisitor<Path>() {
@@ -82,8 +84,8 @@ public class PositionalInvertedIndex {
             }
 
         });
-        System.out.println("Position Inverted Indexing Completed.\n"
-            + "Total Documents Indexed: " + fileNames.size());
+        System.out.println("Inverted Index Size:" + fileNames.size());
+        return index;
     }
 
     /**
@@ -113,7 +115,6 @@ public class PositionalInvertedIndex {
         while (streamText.hasNextToken()) {
             text = streamText.nextToken();
             if (text != null) {
-                text = PorterStemmer.processToken(text);
                 index.addTerm(streamText, text, docID);
             }
         }
@@ -127,8 +128,15 @@ public class PositionalInvertedIndex {
     public final List<String> getDocumentNames(final List<Integer> docIds) {
         List<String> docNames = new ArrayList<>();
         for (int docId = 0; docId < docIds.size(); docId++) {
-            docNames.add(fileNames.get(docIds.get(docId)));
+            String name = fileNames.get(docIds.get(docId));
+            if (!docNames.contains(name)) {
+                docNames.add(fileNames.get(docIds.get(docId)));
+            }
         }
         return docNames;
+    }
+
+    public final String returnFilePath() {
+        return filePath;
     }
 }
