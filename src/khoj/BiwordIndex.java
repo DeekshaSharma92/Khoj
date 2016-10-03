@@ -31,6 +31,7 @@ public class BiwordIndex  {
     while(streamText.hasNextToken()){
         
         String text = streamText.nextToken();
+        text = PorterStemmer.processToken(text);
         if(biwordList.size()==2)
         {
             bwphrase= biwordList.get(0) + " " + biwordList.get(1);
