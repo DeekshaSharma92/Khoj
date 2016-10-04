@@ -5,16 +5,11 @@
  */
 package khoj;
 
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Reads tokens one at a time from an input stream. Returns tokens
@@ -27,8 +22,18 @@ public class SimpleTokenStream implements TokenStream {
      * mReader: to read file.
      */
     private Scanner mReader;
+
+    /**
+     * to read file
+     */
     public Reader reader;
+    /**
+     * body of file
+     */
     private String body = null;
+    /**
+     * positions of words
+     */
     int position = 0;
 
     /**
@@ -54,32 +59,30 @@ public class SimpleTokenStream implements TokenStream {
 
     /**
      *
+     * @param article object that data of JSON file
      * @return returns body of the json doc
      */
-    public final String readFile(Article article) {
-        
+    public final String readFile(final Article article) {
         String articleBody = article.body.toString();
         return articleBody;
     }
-    
+
     /**
      *
+     * @param author object that data of JSON file
      * @return returns author's name of the json doc
      */
-    public final String readFile(Authors author) {
-        
+    public final String readFile(final Authors author) {
         String authorName = "";
-        try{
-        authorName = author.author.toString();
-        }
-        catch (Exception ex){
+        try {
+            authorName = author.author.toString();
+        } catch (Exception ex) {
             authorName = "invalid name";
             System.out.println("Invalid Json files");
             System.exit(0);
         }
         return authorName;
     }
-
 
     /**
      * @return Returns true if the stream has tokens remaining.
@@ -109,7 +112,7 @@ public class SimpleTokenStream implements TokenStream {
      *
      * @return return list of positions
      */
-    public int getTokenPosition() {
+    public final int getTokenPosition() {
         position++;
         return position;
     }

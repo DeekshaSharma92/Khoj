@@ -15,13 +15,32 @@ import java.util.List;
  */
 public class Normalize {
 
-    public List<String> NormalizeToken(String token) {
+    /**
+     * Returns token after normalization
+     *
+     * @param term String to be normalized
+     * @return normalized token list
+     */
+    public final List<String> normalizeToken(final String term) {
+        String token = term;
         String[] tokenSplits = null;
         List<String> tokenList = new ArrayList<>();
         token = token.toLowerCase();
+        /**
+         * removes leading non-alphanumeric characters
+         */
         token = token.replaceAll("^[^a-zA-Z0-9\\s]*", "");
+        /**
+         * removes trailing non-alphanumeric characters
+         */
         token = token.replaceAll("[^a-zA-Z0-9\\s]*$", "");
+        /**
+         * removed apostrophes(') from string
+         */
         token = token.replaceAll("[']", "");
+        /**
+         * split token if hyphen(-) encountered
+         */
         if (token.contains("-")) {
             tokenSplits = token.split("-");
             tokenList.addAll(Arrays.asList(tokenSplits));

@@ -22,7 +22,7 @@ public class SearchEngineUI extends javax.swing.JFrame {
 
     /**
      * PositionalInvertedIndex class object to start positional
-     * Inverted Index
+     * Inverted Index.
      */
     SoundExIndexing soundIndexing = new SoundExIndexing();
     PositionalInvertedIndex indexing = new PositionalInvertedIndex();
@@ -30,7 +30,7 @@ public class SearchEngineUI extends javax.swing.JFrame {
     /**
      * Creates new form SearchEngineUI
      *
-     * @throws java.io.IOException
+     * @throws java.io.IOException for exception hadling
      */
     public SearchEngineUI() throws IOException {
         initComponents();
@@ -38,7 +38,6 @@ public class SearchEngineUI extends javax.swing.JFrame {
         jList1.setModel(model);
 
     }
-    final static String newline = "\n";
 
     /**
      * This method is called from within the constructor to initialize
@@ -156,7 +155,8 @@ public class SearchEngineUI extends javax.swing.JFrame {
                 search = new QueryProcessor(query, soundIndexing,
                     indexing);
             } catch (IOException ex) {
-                Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SearchEngineUI.class.getName())
+                    .log(Level.SEVERE, null, ex);
             }
             int queryType = search.queryType;
             switch (queryType) {
@@ -166,7 +166,9 @@ public class SearchEngineUI extends javax.swing.JFrame {
                         jLabel3.setText("No index found");
                     } else {
                         results = search.multiWordOrQuery();
-                        jLabel3.setText("Found " + results.size() + " documents");
+                        jLabel3.setText("Found "
+                            + results.size()
+                            + " documents");
                     }
                     break;
                 case 2: {
@@ -186,35 +188,37 @@ public class SearchEngineUI extends javax.swing.JFrame {
                                 jLabel3.setText("Author's name");
                                 break;
                             case 4:
-                                if(indexing.fileNames.size() == 0)
-                                {
+                                if (indexing.fileNames.size() == 0) {
                                     model.addElement("Please check files"
                                         + " on the path.");
                                 }
                                 model.addElement("Positional Indexing of "
-                                    +indexing.fileNames.size()
-                                + " document/s completed.");
+                                    + indexing.fileNames.size()
+                                    + " document/s completed.");
                                 model.addElement("BiWord Indexing of "
-                                    +indexing.fileNames.size()
-                                + " document/s completed.");
+                                    + indexing.fileNames.size()
+                                    + " document/s completed.");
                                 break;
                             case 5:
-                                if(soundIndexing.fileNames.size() == 0)
-                                {
+                                if (soundIndexing.fileNames.size() == 0) {
                                     model.addElement("Please check files"
                                         + " on the path.");
                                 }
                                 model.addElement("SoundEx index of "
-                                    +soundIndexing.fileNames.size()
-                                + " document/s created");
+                                    + soundIndexing.fileNames.size()
+                                    + " document/s created");
                                 break;
-                                
+                            default:
+                                break;
+
                         }
-                        
+
                     } catch (IOException ex) {
                         Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                default:
+                    break;
             }
 
             Collections.sort(results);

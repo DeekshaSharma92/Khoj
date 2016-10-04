@@ -30,7 +30,13 @@ public class PositionalInvertedIndex {
      *
      */
     static IndexFile index = new IndexFile();
+    /**
+     * path of files to be indexed.
+     */
     static String filePath;
+    /**
+     * BiwordIndex object for doing biword indexing.
+     */
     BiwordIndex bwindex = new BiwordIndex();
     /**
      * the list of file names that were processed.
@@ -39,9 +45,11 @@ public class PositionalInvertedIndex {
 
     /**
      *
+     * @param path path of files to be indexed.
+     * @return object to refer files indexed.
      * @throws IOException Throws Input Output Exception
      */
-    public IndexFile startIndexing(String path) throws IOException {
+    public final IndexFile startIndexing(final String path) throws IOException {
 
         final Path currentWorkingPath = Paths.get(path)
             .toAbsolutePath();
@@ -62,13 +70,13 @@ public class PositionalInvertedIndex {
 
             @Override
             public FileVisitResult visitFile(final Path file,
-                final BasicFileAttributes attrs) throws FileNotFoundException, IOException {
+                final BasicFileAttributes attrs)
+                throws FileNotFoundException, IOException {
                 // only process .json files
                 if (file.toString().endsWith(".json")) {
-                    // we have found a .txt file; add its name to
+                    // we have found a .json file; add its name to
                     //the fileName list, then index the file and
                     //increase the document ID counter.
-                    // System.out.println("Indexing file " + file.getFileName());
                     fileNames.add(file.getFileName().toString());
                     indexFile(file.toFile(), index, mDocumentID);
                     bwindex.tokenize(file.toFile(), mDocumentID);
@@ -101,6 +109,7 @@ public class PositionalInvertedIndex {
      * @param docID the integer ID of the current document, needed
      * when indexing each term from the document.
      * @throws FileNotFoundException Throws file not found exception
+     * @throws IOException for exception handling
      */
     private static void indexFile(final File file,
         final IndexFile index, final int docID)
@@ -141,6 +150,10 @@ public class PositionalInvertedIndex {
         return docNames;
     }
 
+    /**
+     *
+     * @return filePath.
+     */
     public final String returnFilePath() {
         return filePath;
     }

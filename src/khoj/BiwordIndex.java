@@ -6,8 +6,12 @@
 package khoj;
 
 import com.google.gson.Gson;
-import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -15,11 +19,27 @@ import java.io.*;
  */
 public class BiwordIndex {
 
+    /**
+     * token for indexing.
+     */
     String query;
+    /**
+     * map holding index.
+     */
     Map<String, List<Integer>> biwordMap = new HashMap<>();
+    /**
+     * to normalize token.
+     */
     Normalize normalizeToken = new Normalize();
 
-    public void tokenize(final File file, int documentID) throws IOException {
+    /**
+     *
+     * @param file File to be opened.
+     * @param documentID docId of file
+     * @throws IOException for exception handeling
+     */
+    public final void tokenize(final File file, final int documentID)
+        throws IOException {
         int i = 0;
         String bwphrase;
         List<String> biwordList = new ArrayList<String>();
@@ -32,7 +52,7 @@ public class BiwordIndex {
         while (streamText.hasNextToken()) {
 
             String text = streamText.nextToken();
-            text = normalizeToken.NormalizeToken(text).get(0);
+            text = normalizeToken.normalizeToken(text).get(0);
 
             text = PorterStemmer.processToken(text);
             if (biwordList.size() == 2) {
@@ -46,7 +66,12 @@ public class BiwordIndex {
         }
     }
 
-    public void compose(String term, int documentID) {
+    /**
+     *
+     * @param term For indexing.
+     * @param documentID docId of document
+     */
+    public final void compose(final String term, final int documentID) {
         String biwordPhrase = term;
         List<Integer> phrasedocID = new ArrayList<>();
         if (!biwordMap.containsKey(biwordPhrase)) {
@@ -63,17 +88,22 @@ public class BiwordIndex {
         }
 
     }
-    
+
     /**
      *
-     * @return
+     * @return number of terms in index
      */
-    public int getTermCount() {
+    public final int getTermCount() {
         // TO-DO: return the number of terms in the index.
         int count = biwordMap.size();
         return count;
     }
 
+    /**
+     *
+     * @param phrase
+     * @return
+     */
     public List<Integer> biwordQuery(String phrase) {
         List<Integer> docIdList = biwordMap.get(phrase.trim());
         return docIdList;

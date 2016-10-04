@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 package khoj;
-
-import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 /**
@@ -13,5 +11,8 @@ import com.google.gson.JsonPrimitive;
  * @author jass
  */
 public class Article {
-    JsonPrimitive body;
+    /**
+     * JsonPrimitive to hold body of JSON document.
+     */
+    public JsonPrimitive body;
 }

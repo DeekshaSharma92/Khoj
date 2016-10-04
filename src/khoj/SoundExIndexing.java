@@ -31,6 +31,10 @@ public class SoundExIndexing {
      * the list of file names that were processed.
      */
     final List<String> fileNames = new ArrayList<>();
+
+    /**
+     * file path of documents to be processed.
+     */
     public static String filePath;
 
     /**
@@ -39,11 +43,11 @@ public class SoundExIndexing {
     public final HashMap<String, List<Integer>> soundExIndex = new HashMap<>();
 
     /**
-     * default constructor.
      *
+     * @param path Files path
      * @throws IOException Throws Input Output Exception
      */
-    public void startIndexing(String path) throws IOException {
+    public final void startIndexing(final String path) throws IOException {
         final Path currentWorkingPath = Paths.get(path)
             .toAbsolutePath();
         filePath = currentWorkingPath.toString();
@@ -96,6 +100,7 @@ public class SoundExIndexing {
      * @param file to be indexed.
      * @param docID id of document to be indexed
      * @throws FileNotFoundException Throws file not found exception
+     * @throws IOException for exception handling
      */
     private void indexFile(final File file, final int docID)
         throws FileNotFoundException, IOException {
@@ -155,7 +160,12 @@ public class SoundExIndexing {
 
     }
 
-    public List<String> soundExQuery(String term) {
+    /**
+     *
+     * @param term To be searched.
+     * @return List of result queries
+     */
+    public final List<String> soundExQuery(final String term) {
         List<String> result = new ArrayList<>();
         SoundEx ex = new SoundEx(term);
         String soundCode = ex.characterMapping();
@@ -165,12 +175,16 @@ public class SoundExIndexing {
 
     }
 
+    /**
+     *
+     * @return filePath of documents to be indexed.
+     */
     public final String returnFilePath() {
         return filePath;
     }
 
     /**
-     * implements indexing for soundEx
+     * implements indexing for soundEx.
      */
     private final class SoundEx {
 
@@ -200,7 +214,7 @@ public class SoundExIndexing {
          *
          * @param word String to be converted
          */
-        public SoundEx(final String word) {
+        SoundEx(final String word) {
             this.characterMap = new HashMap<Character, Character>() {
                 {
                     put('b', '1');
@@ -270,7 +284,8 @@ public class SoundExIndexing {
                 } else if (!(new String(charsToBeRemoved)
                     .contains(String.valueOf(temp.charAt(i))))) {
 
-                    tempResult = tempResult + Character.toString(temp.charAt(i));
+                    tempResult = tempResult + Character
+                        .toString(temp.charAt(i));
                 }
             }
             temp = new StringBuilder(tempResult);

@@ -17,12 +17,12 @@ import java.util.List;
 public class IndexFile {
 
     /**
-     *
+     * HashMap to hold index.
      */
     private final HashMap<String, HashMap<Integer, List<Integer>>> mIndex;
 
     /**
-     *
+     * default constructor.
      */
     public IndexFile() {
         mIndex = new HashMap<>();
@@ -30,12 +30,13 @@ public class IndexFile {
 
     /**
      *
-     * @param stream
-     * @param term
-     * @param documentID
-     * @throws FileNotFoundException
+     * @param stream tokenStream object to get position.
+     * @param word to be indexed.
+     * @param documentID Id of document
+     * @throws FileNotFoundException for exception handeling
      */
-    public final void addTerm(final SimpleTokenStream stream, String word,
+    public final void addTerm(final SimpleTokenStream stream,
+        final String word,
         final int documentID) throws FileNotFoundException {
         // TO-DO: add the term to the index hashtable. If the table
         // does not have  an entry for the term, initialize a
@@ -48,7 +49,7 @@ public class IndexFile {
         List<Integer> positionList = new ArrayList<>();
         int position = stream.getTokenPosition();
         Normalize normalizeToken = new Normalize();
-        List<String> tokenList = normalizeToken.NormalizeToken(word);
+        List<String> tokenList = normalizeToken.normalizeToken(word);
         for (String term : tokenList) {
             term = PorterStemmer.processToken(term);
             if (!mIndex.containsKey(term)) {
@@ -61,7 +62,8 @@ public class IndexFile {
                 doc = mIndex.get(term);
                 if (doc.containsKey(documentID)) {
                     positionList = doc.get(documentID);
-                    if ((positionList.get(positionList.size() - 1) != position)) {
+                    if ((positionList.get(positionList.size() - 1)
+                        != position)) {
                         positionList.add(position);
                         doc.put(documentID, positionList);
                         mIndex.put(term, doc);
@@ -76,6 +78,10 @@ public class IndexFile {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getVocab() {
         List<String> vocab = new ArrayList<>(mIndex.keySet());
         return vocab;

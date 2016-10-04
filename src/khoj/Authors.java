@@ -12,9 +12,9 @@ import com.google.gson.JsonPrimitive;
  * @author jass
  */
 public class Authors {
-    JsonPrimitive body;
-    JsonPrimitive url;
-    JsonPrimitive title;
-    JsonPrimitive subtitle;
+
+    /**
+     * JsonPrimitive to hold author name of JSON document.
+     */
     JsonPrimitive author;
 }

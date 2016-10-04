@@ -21,17 +21,16 @@ public class Khoj {
      */
     public static void main(final String[] args) throws IOException {
         // TODO code application logic here
-        
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     new SearchEngineUI().setVisible(true);
                 } catch (IOException ex) {
-                    Logger.getLogger(Khoj.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Khoj.class.getName())
+                        .log(Level.SEVERE, null, ex);
                 }
             }
         });
-        
     }
 }
