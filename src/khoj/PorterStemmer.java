@@ -1,17 +1,28 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package khoj;
 
-import java.util.regex.Pattern;
+import java.util.regex.*;
+import java.util.Scanner;
 
-/**
- *
- * @author jass
- */
 public class PorterStemmer {
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.print("\n Enter string to stem: ");
+            Scanner user_input = new Scanner(System.in);
+            String token;
+            token = user_input.next();
+            System.out.print(processToken(token));
+        }
+    }
+   /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
     /**
      * fixed numbers.
@@ -51,36 +62,34 @@ public class PorterStemmer {
      * 1: token has measure == 1.
      */
     private static final Pattern mEq1 = Pattern.compile("^(" + C
-        + ")?" + "(" + V + C + "){1}");
+        + ")?" + V + C + "$");
 
     /**
      * m greater than 1: token has measure > 1.
      */
     private static final Pattern mGr1 = Pattern.compile("^(" + C
-        + ")?" + "(" + V + C + "){2,}");
+        + ")?"  + V + C + V + C);
     /**
      * vowel: token has a vowel after the first (optional) C.
      */
     private static final Pattern vAc = Pattern.compile("^(" + C
-        + ")?" + V + "[" + V + C + "]*");
+        + ")?" + V );
     /**
      * double consonant: token ends in two consonants that are the
      * same, unless they are L, S, or Z. (look up "backreferencing" to
      * help with this).
      */
-    private static final Pattern dC = Pattern.compile("^(" + C
-        + ")?" + "[" + V + C + "]*" + "([^lszaeiou])\\2$");
+    private static final Pattern dC = Pattern.compile("([^lszaeiou])\\1"+"$");
     /**
      * m equals 1, cvc: token is in Cvc form, where the last c is not
      * w, x, or y.
      */
-    private static final Pattern cVc = Pattern.compile("^(" + C
-        + ")?" + "[" + V + C + "]*" + "(" + c + v + "[^aeiouwxy])$");
+    private static final Pattern cVc = Pattern.compile( c + v + c + "$");
     /**
      * vowel sandwiched by any other character.
      */
-    private static final Pattern sVs = Pattern.compile("[" + V + C
-        + "]*" + v + "[" + V + C + "]*");
+   //privatestatic final Pattern sVs = Pattern.compile("[" + V + C
+      //  + "]*" + v + "[" + V + C + "]*");
 
     /**
      *
@@ -96,14 +105,18 @@ public class PorterStemmer {
         // step 1a.1
         if (token.endsWith("sses")) {
             token = token.substring(0, token.length() - 2);
+        }
 
-        } else if (token.endsWith("ies")) {
+        if (token.endsWith("ies")) {
             //step 1a.2
             token = token.substring(0, token.length() - 2);
-
-        } else if (token.endsWith("ss")) {
-            //do nothing
-        } else if (!token.endsWith("ss") && token.endsWith("s")) {
+        }
+               
+               
+        if(token.endsWith("s")) {
+            if (token.endsWith("ss")) {
+            }else{
+       
             // note that Step 1a.3 implies that there is only a
             //single 's' as the suffix; ss does not count. you may
             //need a regex pattern here for "not s followed by s".
@@ -111,7 +124,7 @@ public class PorterStemmer {
             token = token.substring(0, token.length() - 1);
 
         }
-
+        }
         // step 1b
         boolean doStep1bb = false;
         // step 1b
@@ -123,48 +136,66 @@ public class PorterStemmer {
             if (mGr0.matcher(stem).find()) { // if the pattern matches the stem
                 token = stem + "ee";
             }
-        } else if (token.endsWith("ed")) {
+        } 
+        if (token.endsWith("ed")) {
+            if(token.endsWith("eed")){
+        }else{
+            
             // program the rest of 1b. set the boolean doStep1bb
             //to true if Step 1b* should be performed.
             String stem = token.substring(0, token.length() - 2);
-
-            if (sVs.matcher(stem).find()) {
-                doStep1bb = true;
+            
+            if (vAc.matcher(stem).find()) {
+                //doStep1bb = true;
                 token = stem;
+                doStep1bb =true;
             }
-        } else if (token.endsWith("ing")) {
+        }
+        }
+            if (token.endsWith("ing")) {
+            
             String stem = token.substring(0, token.length() - THREE);
 
-            if (sVs.matcher(stem).find()) {
-                doStep1bb = true;
+            if (vAc.matcher(stem).find()) {
+                //doStep1bb = true;
                 token = stem;
+                doStep1bb=true;
             }
         }
 
         // step 1b*, only if the 1b.2 or 1b.3 were performed.
         if (doStep1bb) {
             if (token.endsWith("at") || token.endsWith("bl")
-                || token.endsWith("iz")) {
-                token = token + "e";
-
-            } else if (dC.matcher(token).find()) {
-                token = token.substring(0, token.length() - 1);
-
-            } else if (mEq1.matcher(token).find()
-                && cVc.matcher(token).find()) {
+                || token.endsWith("iz")){
                 token = token + "e";
 
             }
+            if (dC.matcher(token).find()) {
+                if((!token.endsWith("l") && !token.endsWith("s")) && !token.endsWith("z")){
+                     token = token.substring(0, token.length() - 1);
+                }else{}
+                
+            }
+            if(mEq1.matcher(token).find()){
+                if(cVc.matcher(token).find()){
+                    if(!token.endsWith("w") && !token.endsWith("y")){
+                        token = token+"e";
+                    }
+                }
+            }
+            
+        }
+               
 
             // use the regex patterns you wrote for 1b*.4 and 1b*.5
-        }
+        
 
         // step 1c
         // program this step. test the suffix of 'y' first,
         //then test the condition *v* on the stem.
         if (token.endsWith("y")) {
             String stem = token.substring(0, token.length() - 1);
-            if (sVs.matcher(stem).find()) {
+            if (vAc.matcher(stem).find()) {
                 token = stem + "i";
 
             }
@@ -221,7 +252,6 @@ public class PorterStemmer {
         new String[]{"ize", ""}
         };
         token = suffixReplacementHelper(token, mGr1, step4pairs);
-
         // note that ION should only be removed if the suffix is SION or TION,
         // which would leave the S or T.
         // as before, if one suffix matches, do not try any others even if the
@@ -229,21 +259,33 @@ public class PorterStemmer {
         // step 5
         // program this step. you have a regex for m=1 and for "Cvc", which
         // you can use to see if m=1 and NOT Cvc.
-        if (mGr1.matcher(token).find() && token.endsWith("e")) {
-            token = token.substring(0, token.length() - 1);
-        } else if (mEq1.matcher(token).find()
-            && !cVc.matcher(token).find() && token.endsWith("e")) {
-            token = token.substring(0, token.length() - 1);
-        }
+        if (token.endsWith("e")) {
+           
+            if (mGr1.matcher(token).find()){
+                token = token.substring(0, token.length() - 1);
+            }
+            
+        
         // all your code should change the variable token, which represents
         // the stemmed term for the token.
-        if (mGr1.matcher(token).find() && dC.matcher(token).find()
-            && token.endsWith("ll")) {
-            token = token.substring(0, token.length() - 1);
+        if (mGr1.matcher(token).find()){
+            if(!cVc.matcher(token).find()){
+                if(!token.endsWith("w") && !token.endsWith("y")){
+                    token = token.substring(0, token.length()-1);
+                }
+            }
         }
+            
+        }
+        if(dC.matcher(token).find() && token.endsWith("l")){
+            if(mGr1.matcher(token).find()){
+                token = token.substring(0,token.length()-1);
+            }
+        }
+        
         return token;
-    }
-
+        }
+    
     /**
      *
      * @param token
@@ -251,6 +293,7 @@ public class PorterStemmer {
      * @param pairs
      * @return
      */
+    
     private static String suffixReplacementHelper(String token,
         final Pattern m, String[][] pairs) {
 
