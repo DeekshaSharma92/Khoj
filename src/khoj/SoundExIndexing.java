@@ -65,7 +65,7 @@ public class SoundExIndexing {
             @Override
             public FileVisitResult visitFile(final Path file,
                 final BasicFileAttributes attrs)
-                throws FileNotFoundException {
+                throws FileNotFoundException, IOException {
                 // only process .json files
                 if (file.toString().endsWith(".json")) {
                     // we have found a .txt file; add its name to
@@ -98,7 +98,7 @@ public class SoundExIndexing {
      * @throws FileNotFoundException Throws file not found exception
      */
     private void indexFile(final File file, final int docID)
-        throws FileNotFoundException {
+        throws FileNotFoundException, IOException {
         SimpleTokenStream streamFile = new SimpleTokenStream(file);
         Gson gson = new Gson();
         Authors author = gson.fromJson(streamFile.reader, Authors.class);
@@ -116,6 +116,7 @@ public class SoundExIndexing {
                 }
             }
         }
+        streamFile.reader.close();
     }
 
     /**

@@ -7,8 +7,6 @@ package khoj;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +16,7 @@ import javax.swing.DefaultListModel;
 
 /**
  *
- * @author jass
+ * @author deeksha
  */
 public class SearchEngineUI extends javax.swing.JFrame {
 
@@ -163,17 +161,56 @@ public class SearchEngineUI extends javax.swing.JFrame {
             int queryType = search.queryType;
             switch (queryType) {
                 case 1:
-                    results = search.multiWordOrQuery();
-
-                    jLabel3.setText("Found " + results.size() + " documents");
-
+                    if (indexing.index.getTermCount() == 0
+                        || indexing.bwindex.getTermCount() == 0) {
+                        jLabel3.setText("No index found");
+                    } else {
+                        results = search.multiWordOrQuery();
+                        jLabel3.setText("Found " + results.size() + " documents");
+                    }
                     break;
                 case 2: {
                     try {
                         results = search.specialQuery();
-                        if (results.size() > 0) {
-                            jLabel3.setText("Found " + results.size() + " documents");
+                        int specialQuery = search.specialQueryType;
+                        System.out.println(specialQuery);
+                        switch (specialQuery) {
+                            case 1:
+                                jLabel3.setText("Stemming result");
+                                break;
+                            case 2:
+                                jLabel3.setText("Total: "
+                                    + results.size());
+                                break;
+                            case 3:
+                                jLabel3.setText("Author's name");
+                                break;
+                            case 4:
+                                if(indexing.fileNames.size() == 0)
+                                {
+                                    model.addElement("Please check files"
+                                        + " on the path.");
+                                }
+                                model.addElement("Positional Indexing of "
+                                    +indexing.fileNames.size()
+                                + " document/s completed.");
+                                model.addElement("BiWord Indexing of "
+                                    +indexing.fileNames.size()
+                                + " document/s completed.");
+                                break;
+                            case 5:
+                                if(soundIndexing.fileNames.size() == 0)
+                                {
+                                    model.addElement("Please check files"
+                                        + " on the path.");
+                                }
+                                model.addElement("SoundEx index of "
+                                    +soundIndexing.fileNames.size()
+                                + " document/s created");
+                                break;
+                                
                         }
+                        
                     } catch (IOException ex) {
                         Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -193,16 +230,18 @@ public class SearchEngineUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         String clickedValue = jList1.getSelectedValue();
         String fileName;
-        if (clickedValue.contains("article")) {
-            fileName = indexing.returnFilePath() + "/" + clickedValue;
-        } else {
-            fileName = soundIndexing.returnFilePath() + "/" + clickedValue;
-        }
-        File file = new File(fileName);
-        try {
-            java.awt.Desktop.getDesktop().open(file);
-        } catch (IOException ex) {
-            Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
+        if (clickedValue.endsWith(".json")) {
+            if (clickedValue.contains("article")) {
+                fileName = indexing.returnFilePath() + "/" + clickedValue;
+            } else {
+                fileName = soundIndexing.returnFilePath() + "/" + clickedValue;
+            }
+            File file = new File(fileName);
+            try {
+                java.awt.Desktop.getDesktop().open(file);
+            } catch (IOException ex) {
+                Logger.getLogger(SearchEngineUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jList1MouseClicked
 

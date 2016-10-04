@@ -28,6 +28,7 @@ public class QueryProcessor {
     IndexFile index;
     final SoundExIndexing soundIndexing;
     final Normalize normalizeToken = new Normalize();
+    static int specialQueryType = 0;
 
     /**
      *
@@ -58,25 +59,30 @@ public class QueryProcessor {
         if (null != queryBreak[0]) {
             switch (queryBreak[0]) {
                 case "stem":
+                    specialQueryType = 1;
                     token = queryBreak[1].replaceAll("\\W", "").toLowerCase();
                     String stemmed = PorterStemmer.processToken(token);
                     result.add(stemmed);
                     break;
                 case "vocab":
+                    specialQueryType = 2;
                     result = index.getVocab();
                     break;
                 case "q":
                     System.exit(0);
                     break;
                 case "author":
+                    specialQueryType = 3;
                     token = queryBreak[1].replaceAll("\\W", "").toLowerCase();
                     result = soundIndexing.soundExQuery(token);
                     break;
                 case "index":
+                    specialQueryType = 4;
                     path = queryBreak[1];
                     index = engine.startIndexing(path);
                     break;
                 case "soundindex":
+                    specialQueryType = 5;
                     path = queryBreak[1];
                     soundIndexing.startIndexing(path);
                     break;

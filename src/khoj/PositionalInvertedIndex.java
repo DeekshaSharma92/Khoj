@@ -31,7 +31,7 @@ public class PositionalInvertedIndex {
      */
     static IndexFile index = new IndexFile();
     static String filePath;
-    BiwordIndex bwindex= new BiwordIndex();
+    BiwordIndex bwindex = new BiwordIndex();
     /**
      * the list of file names that were processed.
      */
@@ -104,7 +104,7 @@ public class PositionalInvertedIndex {
      */
     private static void indexFile(final File file,
         final IndexFile index, final int docID)
-        throws FileNotFoundException {
+        throws FileNotFoundException, IOException {
         // TO-DO: finish this method for indexing a particular file.
         // Construct a SimpleTokenStream for the given File.
         // Read each token from the stream and add it to the index.
@@ -120,6 +120,7 @@ public class PositionalInvertedIndex {
                 index.addTerm(streamText, text, docID);
             }
         }
+        streamFile.reader.close();
     }
 
     /**
@@ -129,10 +130,12 @@ public class PositionalInvertedIndex {
      */
     public final List<String> getDocumentNames(final List<Integer> docIds) {
         List<String> docNames = new ArrayList<>();
-        for (int docId = 0; docId < docIds.size(); docId++) {
-            String name = fileNames.get(docIds.get(docId));
-            if (!docNames.contains(name)) {
-                docNames.add(fileNames.get(docIds.get(docId)));
+        if (docIds != null) {
+            for (int docId = 0; docId < docIds.size(); docId++) {
+                String name = fileNames.get(docIds.get(docId));
+                if (!docNames.contains(name)) {
+                    docNames.add(fileNames.get(docIds.get(docId)));
+                }
             }
         }
         return docNames;

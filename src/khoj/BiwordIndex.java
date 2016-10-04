@@ -63,10 +63,19 @@ public class BiwordIndex {
         }
 
     }
+    
+    /**
+     *
+     * @return
+     */
+    public int getTermCount() {
+        // TO-DO: return the number of terms in the index.
+        int count = biwordMap.size();
+        return count;
+    }
 
     public List<Integer> biwordQuery(String phrase) {
         List<Integer> docIdList = biwordMap.get(phrase.trim());
-        System.out.println(phrase.trim());
         return docIdList;
     }
 }
