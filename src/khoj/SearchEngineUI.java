@@ -175,7 +175,6 @@ public class SearchEngineUI extends javax.swing.JFrame {
                     try {
                         results = search.specialQuery();
                         int specialQuery = search.specialQueryType;
-                        System.out.println(specialQuery);
                         switch (specialQuery) {
                             case 1:
                                 jLabel3.setText("Stemming result");
@@ -185,7 +184,15 @@ public class SearchEngineUI extends javax.swing.JFrame {
                                     + results.size());
                                 break;
                             case 3:
-                                jLabel3.setText("Author's name");
+                                if (soundIndexing.fileNames.size()
+                                    == 0) {
+                                    model.addElement("No index found");
+                                } else {
+                                    jLabel3.setText("Found "
+                                        + results.size()
+                                        + " documents");
+                                }
+
                                 break;
                             case 4:
                                 if (indexing.fileNames.size() == 0) {

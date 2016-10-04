@@ -40,7 +40,14 @@ public class SoundExIndexing {
     /**
      * HashMap for soundEx index.
      */
-    public final HashMap<String, List<Integer>> soundExIndex = new HashMap<>();
+    public final HashMap<String, List<Integer>> soundExIndex;
+
+    /**
+     * default constructor
+     */
+    public SoundExIndexing() {
+        soundExIndex = new HashMap<>();
+    }
 
     /**
      *
@@ -108,19 +115,19 @@ public class SoundExIndexing {
         Gson gson = new Gson();
         Authors author = gson.fromJson(streamFile.reader, Authors.class);
         String text = streamFile.readFile(author);
-        if ("invalid name".equals(text)) {
-            SimpleTokenStream streamText = new SimpleTokenStream(text);
-            int i = 0;
-            while (streamText.hasNextToken()) {
-                text = streamText.nextToken();
-                if (text != null) {
+        
 
-                    SoundEx ex = new SoundEx(text);
-                    text = ex.characterMapping();
-                    addTerm(text, docID);
-                }
+        SimpleTokenStream streamText = new SimpleTokenStream(text);
+        int i = 0;
+        while (streamText.hasNextToken()) {
+            text = streamText.nextToken();
+            SoundEx ex = new SoundEx(text);
+            if (text != null) {
+                text = ex.characterMapping();
+                addTerm(text, docID);
             }
         }
+
         streamFile.reader.close();
     }
 
@@ -157,7 +164,6 @@ public class SoundExIndexing {
                 soundExIndex.put(text, docIdList);
             }
         }
-
     }
 
     /**
@@ -239,7 +245,7 @@ public class SoundExIndexing {
             };
             this.charsToBeRemoved = new char[]{'a', 'e', 'i', 'o', 'u',
                 'h', 'w', 'y'};
-            token = word.toLowerCase();
+            token = word.trim().replaceAll("\\W", "").toLowerCase();;
         }
 
         /**
